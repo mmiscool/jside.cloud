@@ -1,0 +1,189 @@
+<style>
+
+ul{
+  list-style-type: circle;
+  margin-left:10px;
+  padding: 5;
+}
+    body {
+        width: 100%;
+        height: 100%;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    #top {
+        float: left;
+        width: 100%;
+        background-color: red;
+        height: 30px;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .toolbar-item {
+        height: 100%;
+        padding: 0px;
+        margin: 0px;
+        vertical-align: center;
+        float: left;
+    }
+
+    div {
+        float: left;
+        padding: 0px;
+        margin: 0px;
+        border: 0px;
+    }
+
+    #bottom {
+        width: 100%;
+        height: calc(100% - 30px);
+
+    }
+
+
+    #left {
+        float: left;
+        overflow: scroll;
+        width: 300px;
+        height: 100%;
+
+    }
+
+    .right {
+        float: left;
+        overflow: scroll;
+        width: calc(100% - 300px);
+        height: 100%;
+    }
+
+    #codeEditor {
+        width: 100%;
+        height: 100%;
+
+    }
+
+    input{
+        width:100px;
+    }
+</style>
+<script src="getListy.js"></script>
+
+<body>
+    <div id="top" style="width:100%;">
+        <b class="toolbar-item">Project Name:</b>
+        <input class="toolbar-item" id="projectName" type="text">
+        <button onclick="saveMyCode()" class="toolbar-item">💾</button>
+        <button class="toolbar-item">🗋</button>
+        <button class="toolbar-item">🗁</button>
+        <button class="toolbar-item">Stop</button>
+        <button onclick='runApp();' class="toolbar-item">go</button>
+        <b class="toolbar-item">|---|</b>
+        <button class="toolbar-item">GUI Edit</button>
+        <button onclick='setEditMode("codeEditor");' class="toolbar-item">Code Edit</button>
+        <button class="toolbar-item">CSS Edit</button>
+
+    </div>
+
+    <div id="bottom">
+        <div id="left" style="background-color: aqua;">
+
+        </div>
+        <div class="right" id="right" style="background-color: royalblue;">
+            <textarea id="codeEditor" style="width:100%;height:100%;"></textarea>
+            <iframe id="appRun" style="width:100%;height:100%;"></iframe>
+        </div>
+
+    </div>
+</body>
+
+<script>
+
+    //code to enable using tabs in the code editor
+    document.getElementById("codeEditor").addEventListener('keydown', this.keyHandler, false);
+    function keyHandler(e) {
+        var TABKEY = 9;
+        if (e.keyCode == TABKEY) {
+            this.value += "    ";
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            return false;
+        }
+    }
+
+    async function setEditMode(modeToSetTo) {
+        document.getElementById("codeEditor").style.display = "none";
+        document.getElementById("appRun").style.display = "none";
+
+        document.getElementById(modeToSetTo).style.display = "inline";
+    }
+
+    setEditMode("codeEditor");
+
+
+    async function runApp() {
+        alert(localStorage.getItem(document.getElementById("projectName").value));
+        alert(btoa(localStorage.getItem(document.getElementById("projectName").value)));
+        document.getElementById("appRun").src = "../run.html?data=" + btoa(localStorage.getItem(document.getElementById("projectName").value));
+        setEditMode("appRun");
+    }
+
+
+
+</script>
+
+<script>
+    async function saveMyCode() {
+        localStorage.setItem(document.getElementById("projectName").value,
+            JSON.stringify(
+                {
+                    innerText: "hello world",
+                    id: "fun",
+                    nodeName: "body",
+                    style: "background-color:red;",
+                    children: [
+                        {
+                            innerText: "hello world",
+                            id: "mike",
+                            nodeName: "input",
+                        },
+                        {
+                            innerText: "click me",
+                            id: "mybutton",
+                            nodeName: "button",
+                            onclick: "alert('hello world')",
+                        },
+                        {
+                            innerText: "",
+                            id: "fun1",
+                            nodeName: "div",
+                            style: "background-color:blue;",
+                            children: [
+                                {
+                                    innerText: "lower button",
+                                    id: "mybutton",
+                                    nodeName: "button",
+                                }
+                            ]
+                        },
+                    ],
+                }
+                , null, 1)
+        );
+
+
+
+
+
+
+    }
+
+    data = JSON.parse(localStorage.getItem(document.getElementById("projectName").value));
+
+
+    document.getElementById('left').appendChild(JSON2HTMLList(data));
+
+
+</script>
