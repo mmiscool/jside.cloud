@@ -3,26 +3,34 @@
 <script>
     async function start() {
         var pageCode = atob((new URL(window.location.href)).searchParams.get("data"))
+        //alert(pageCode);
+        //console.log(pageCode);
         makeItem(JSON.parse(pageCode), document.body);
+
     }
 
 
     async function makeItem(itemInput, parentObject) {
-        var itemToMake = document.createElement(itemInput.nodeName);
-        for (var prop in itemInput) {
-            itemToMake[prop] = itemInput[prop];
-            itemToMake.setAttribute(prop, itemInput[prop]);
+        try {
+            var itemToMake = document.createElement(itemInput.nodeName);
+            for (var prop in itemInput) {
+                itemToMake[prop] = itemInput[prop];
+                itemToMake.setAttribute(prop, itemInput[prop]);
+            }
+
+            console.log(itemInput.children);
+
+            //console.log(itemInput.children, itemInput.children.length);
+            for (var childItem in itemInput.children) {
+                console.log(itemInput.children[childItem],)
+                console.log(itemToMake);
+                await makeItem(itemInput.children[childItem], itemToMake);
+            }
+            await parentObject.appendChild(itemToMake);
+        } catch{
+            
         }
 
-        console.log(itemInput.children);
-
-        //console.log(itemInput.children, itemInput.children.length);
-        for (var childItem in itemInput.children) {
-            console.log(itemInput.children[childItem],)
-            console.log(itemToMake);
-            await makeItem(itemInput.children[childItem], itemToMake);
-        }
-        await parentObject.appendChild(itemToMake);
     }
     start();
 </script>
