@@ -1,5 +1,9 @@
 <body></body>
 <script>
+    window.getID=async function(itemToLookup){
+        return document.getElementById(itemToLookup);
+    }
+
     async function start() {
         var pageCode = atob((new URL(window.location.href)).searchParams.get("data"))
         //alert(pageCode);

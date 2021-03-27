@@ -104,8 +104,9 @@
         </div>
         <div class="right" id="right" style="background-color: royalblue;">
             <div id="codeEditor" style="width:100%;height:100%;">
-                <input id="" style="width:100%;height:25px;">
-                <textarea id="codeEditorText" style="width:100%;height:calc(100% - 25px);"></textarea>
+                <input id="fieldToBeEditing" style="width:100%;height:25px;">
+                <textarea id="codeEditorText" style="width:100%;height:calc(100% - 25px);" onmouseout="updateFromCodeField(this.value)"
+                onchange="updateFromCodeField(this.value)"></textarea>
             </div>
 
             <iframe id="appRun" style="width:100%;height:100%;"></iframe>
@@ -168,8 +169,8 @@
 
     async function newCode() {
         data = {
-            innerText: "hello world",
-            id: "fun",
+            innerText: "",
+            id: "mainBody",
             nodeName: "body",
             style: "background-color:red;",
             children: [],
@@ -232,6 +233,14 @@
     }
 
 
+
+    async function updateFromCodeField(newCodeValue){
+        await eval(document.getElementById("fieldToBeEditing").value + "= document.getElementById('codeEditorText').value;" );
+        setPropertiesWindow(document.getElementById("editProperties-id").value);
+    }
+
+
+
     async function setPropertiesWindow(itemToBeEditied = "") {
         //alert(JSON.stringify(itemToBeEditied));
         document.getElementById("editProperties").innerHTML = "";
@@ -265,7 +274,7 @@
                     document.getElementById("editProperties").appendChild(fieldLabel);
 
                     fieldeditThing.value = objectForEdit[prop];
-                    fieldeditThing.setAttribute("onchange", itemToBeEditied + "." + prop + "= this.value;");
+                    fieldeditThing.setAttribute("onchange", itemToBeEditied + "." + prop + "= this.value;updateTheLeftList()");
 
 
                     document.getElementById("editProperties").appendChild(fieldeditThing);
@@ -278,7 +287,11 @@
                     document.getElementById("editProperties").appendChild(fieldLabel);
 
                     fieldeditThing.value = objectForEdit[prop];
-                    fieldeditThing.setAttribute("onchange", itemToBeEditied + "." + prop + "= this.value;");
+                    fieldeditThing.setAttribute("onchange", itemToBeEditied + "." + prop + "= this.value;updateTheLeftList()");
+                    fieldeditThing.setAttribute("ondblclick", `
+                    document.getElementById("fieldToBeEditing").value = "`  + itemToBeEditied + "." + prop + `";
+                    document.getElementById("codeEditorText").value = this.value;
+                    `);
 
 
                     document.getElementById("editProperties").appendChild(fieldeditThing);
