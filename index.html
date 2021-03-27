@@ -84,9 +84,6 @@
         <button onclick="document.getElementById('appRun').src = '../run.html';" class="toolbar-item">🛑</button>
         <button onclick='runApp();' class="toolbar-item">▶</button>
         <b class="toolbar-item" style="width:25px;"></b>
-        <button class="toolbar-item">GUI Edit</button>
-        <button onclick='setEditMode("codeEditor");' class="toolbar-item">Code Edit</button>
-        <button class="toolbar-item">CSS Edit</button>
     </div>
 
     <div id="bottom">
@@ -163,6 +160,8 @@
         "select",
         "datalist",
         "option",
+        "style",
+        "script",
     ]
 
 
@@ -282,15 +281,18 @@
 
                     document.getElementById("editProperties").appendChild(document.createElement("br"));
                 } else {
-                    var fieldeditThing = document.createElement("input");
+                    var fieldeditThing = document.createElement("textarea");
+                    fieldeditThing.style = "width:150px;height:25px";
                     fieldLabel.innerText = prop;
                     document.getElementById("editProperties").appendChild(fieldLabel);
 
                     fieldeditThing.value = objectForEdit[prop];
                     fieldeditThing.setAttribute("onchange", itemToBeEditied + "." + prop + "= this.value;updateTheLeftList()");
                     fieldeditThing.setAttribute("ondblclick", `
+                    setEditMode("codeEditor");
                     document.getElementById("fieldToBeEditing").value = "`  + itemToBeEditied + "." + prop + `";
                     document.getElementById("codeEditorText").value = this.value;
+                    this.disabled = true;
                     `);
 
 
