@@ -84,6 +84,7 @@
         <button onclick="document.getElementById('appRun').src = '../run.html';" class="toolbar-item">🛑</button>
         <button onclick='runApp();' class="toolbar-item">▶</button>
         <b class="toolbar-item" style="width:25px;"></b>
+        <button onclick='openInNewTab();' class="toolbar-item">Deploy To Shareable Link</button>
     </div>
 
     <div id="bottom">
@@ -142,6 +143,12 @@
         //alert(btoa(localStorage.getItem(document.getElementById("projectName").value)));
         document.getElementById("appRun").src = "../run.html?data=" + btoa(JSON.stringify(data));
         setEditMode("appRun");
+    }
+
+
+    async function openInNewTab(){
+        window.open( "../run.html?data=" + btoa(JSON.stringify(data)));
+
     }
 
 
