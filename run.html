@@ -1,5 +1,4 @@
 <body></body>
-
 <script>
     async function start() {
         var pageCode = atob((new URL(window.location.href)).searchParams.get("data"))
@@ -9,7 +8,6 @@
 
     }
 
-
     async function makeItem(itemInput, parentObject) {
         try {
             var itemToMake = document.createElement(itemInput.nodeName);
@@ -17,10 +15,7 @@
                 itemToMake[prop] = itemInput[prop];
                 itemToMake.setAttribute(prop, itemInput[prop]);
             }
-
             console.log(itemInput.children);
-
-            //console.log(itemInput.children, itemInput.children.length);
             for (var childItem in itemInput.children) {
                 console.log(itemInput.children[childItem],)
                 console.log(itemToMake);
@@ -30,7 +25,6 @@
         } catch{
             
         }
-
     }
     start();
 </script>
