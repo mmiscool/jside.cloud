@@ -78,30 +78,36 @@
         <b class="toolbar-item">Project Name:</b>
         <input class="toolbar-item" id="projectName" type="text">
         <button onclick="saveMyCode()" class="toolbar-item">💾</button>
-        <button class="toolbar-item">🗋</button>
-        <button class="toolbar-item">🗁</button>
-        <button class="toolbar-item">Stop</button>
-        <button onclick='runApp();' class="toolbar-item">go</button>
-        <b class="toolbar-item">|---|</b>
+        <button onclick="newCode()" class="toolbar-item">🗋</button>
+        <button onclick="loadMyCode()" class="toolbar-item">🗁</button>
+        <b class="toolbar-item" style="width:25px;"></b>
+        <button onclick="document.getElementById('appRun').src = '../run.html';" class="toolbar-item">🛑</button>
+        <button onclick='runApp();' class="toolbar-item">▶</button>
+        <b class="toolbar-item" style="width:25px;"></b>
         <button class="toolbar-item">GUI Edit</button>
         <button onclick='setEditMode("codeEditor");' class="toolbar-item">Code Edit</button>
         <button class="toolbar-item">CSS Edit</button>
-
     </div>
 
     <div id="bottom">
         <div id="left" style="background-color: aqua;">
-            <div id="leftList" style="height:50%;overflow: scroll;width:100%;padding: 0px;margin: 0px;background-color: rgb(172, 175, 175);"></div>
-            <div style="height:50%;overflow: scroll;width:100%;padding: 0px;margin: 0px;background-color: rgb(119, 190, 190);">
+            <div id="leftList"
+                style="height:50%;overflow: scroll;width:100%;padding: 0px;margin: 0px;background-color: rgb(172, 175, 175);">
+            </div>
+            <div
+                style="height:50%;overflow: scroll;width:100%;padding: 0px;margin: 0px;background-color: rgb(119, 190, 190);">
                 <h3>Properties editor</h3>
                 <hr>
                 <input id="editProperties-id" type="text" style="width:calc(100% - 15px);" disabled>
                 <div id="editProperties" style="width:100%;text-align: right;"></div>
             </div>
-
         </div>
         <div class="right" id="right" style="background-color: royalblue;">
-            <textarea id="codeEditor" style="width:100%;height:100%;"></textarea>
+            <div id="codeEditor" style="width:100%;height:100%;">
+                <input id="" style="width:100%;height:25px;">
+                <textarea id="codeEditorText" style="width:100%;height:calc(100% - 25px);"></textarea>
+            </div>
+
             <iframe id="appRun" style="width:100%;height:100%;"></iframe>
         </div>
 
@@ -145,61 +151,47 @@
 </script>
 
 <script>
-    async function saveMyCode() {
-        localStorage.setItem(document.getElementById("projectName").value,
-            JSON.stringify(
-                {
-                    innerText: "hello world",
-                    id: "fun",
-                    nodeName: "body",
-                    style: "background-color:red;",
-                    children: [
-                        {
-                            innerText: "hello world",
-                            id: "mike",
-                            nodeName: "input",
-                        },
-                        {
-                            innerText: "hello world",
-                            id: "mike1",
-                            nodeName: "input",
-                        },
-                        {
-                            innerText: "click me",
-                            id: "mybutton",
-                            nodeName: "button",
-                            onclick: "alert('hello world')",
-                        },
-                        {
-                            innerText: "",
-                            id: "fun1",
-                            nodeName: "div",
-                            style: "background-color:blue;",
-                            children: [
-                                {
-                                    innerText: "lower button",
-                                    id: "mybutton0",
-                                    nodeName: "button",
-                                },
-                                {
-                                    innerText: "lower button",
-                                    id: "mybutton1",
-                                    nodeName: "button",
-                                },
-                                {
-                                    innerText: "lower button",
-                                    id: "mybutton1",
-                                    nodeName: "button",
-                                }
-                            ]
-                        },
-                    ],
-                }
-                , null, 1)
-        );
+
+    const htmlTagList = [
+        "body",
+        "div",
+        "input",
+        "button",
+        "textarea",
+        "label",
+        "select",
+        "datalist",
+        "option",
+    ]
+
+
+
+    async function newCode() {
+        data = {
+            innerText: "hello world",
+            id: "fun",
+            nodeName: "body",
+            style: "background-color:red;",
+            children: [],
+        };
+        updateTheLeftList();
     }
 
-    data = JSON.parse(localStorage.getItem(document.getElementById("projectName").value));
+
+    async function saveMyCode() {
+        await localStorage.setItem(document.getElementById("projectName").value,
+            JSON.stringify(data, null, 1)
+        );
+        updateTheLeftList();
+    }
+
+
+    async function loadMyCode() {
+        data = await JSON.parse(localStorage.getItem(document.getElementById("projectName").value));
+        updateTheLeftList();
+    }
+
+
 
 
 
@@ -250,19 +242,50 @@
 
         for (var prop in objectForEdit) {
             var fieldLabel = document.createElement("b");
-            var fieldeditThing = document.createElement("input");
+
             if (prop !== "children") {
-                fieldLabel.innerText = prop;
-                document.getElementById("editProperties").appendChild(fieldLabel);
 
-                fieldeditThing.value = objectForEdit[prop];
-                fieldeditThing.setAttribute("onchange", itemToBeEditied + "." + prop + "= this.value;");
+                if (prop == "nodeName") {
+                    var fieldeditThing = document.createElement("select");
+                    fieldeditThing.id = "";
 
 
-                document.getElementById("editProperties").appendChild(fieldeditThing);
+                    htmlTagList.forEach(function (item) {
+                        const optionObj = document.createElement("option");
+                        optionObj.textContent = item;
+                        optionObj.value = item;
+                        fieldeditThing.appendChild(optionObj);
+                    });
 
-                document.getElementById("editProperties").appendChild(document.createElement("br"));
-                //alert(objectForEdit[prop]);
+                    fieldeditThing.setAttribute("list", "nodeTypeDataList");
+                    fieldeditThing.setAttribute("id", "yay");
+                    fieldeditThing.setAttribute("type", "text");
+
+                    fieldLabel.innerText = prop;
+                    document.getElementById("editProperties").appendChild(fieldLabel);
+
+                    fieldeditThing.value = objectForEdit[prop];
+                    fieldeditThing.setAttribute("onchange", itemToBeEditied + "." + prop + "= this.value;");
+
+
+                    document.getElementById("editProperties").appendChild(fieldeditThing);
+
+
+                    document.getElementById("editProperties").appendChild(document.createElement("br"));
+                } else {
+                    var fieldeditThing = document.createElement("input");
+                    fieldLabel.innerText = prop;
+                    document.getElementById("editProperties").appendChild(fieldLabel);
+
+                    fieldeditThing.value = objectForEdit[prop];
+                    fieldeditThing.setAttribute("onchange", itemToBeEditied + "." + prop + "= this.value;");
+
+
+                    document.getElementById("editProperties").appendChild(fieldeditThing);
+
+                    document.getElementById("editProperties").appendChild(document.createElement("br"));
+                    //alert(objectForEdit[prop]);
+                }
             }
         }
     }
@@ -274,9 +297,23 @@
         innerText: "",
         nodeName: "div",
         style: "",
+        onchange: "",
+        onclick: "",
+        onmouseover: "",
+        onmouseout: "",
+        onkeydown: "",
+        onload: "",
     });
 
-
+    function cleanArray(actual) {
+        var newArray = new Array();
+        for (var i = 0; i < actual.length; i++) {
+            if (actual[i]) {
+                newArray.push(actual[i]);
+            }
+        }
+        return newArray;
+    }
 
     //make some list stuff on the left hand side
     async function makeItem(itemInput, parentObject, baseObjectName = "") {
@@ -292,6 +329,12 @@
                     itemInput.nodeName + " " + itemInput.id,
                     nextObjectNmae
                 ));
+        }
+
+        try {
+            itemInput.children = cleanArray(itemInput.children);
+        } catch {
+
         }
 
 
