@@ -1,14 +1,12 @@
 <body></body>
 <script>
     window.getID=async function(itemToLookup){
-        alert(document.getElementById(itemToLookup).value)
-        return document.getElementById(itemToLookup);
+        var myThingToReturn = await (await document.getElementById(itemToLookup));
+        return myThingToReturn;
     }
 
     async function start() {
         var pageCode = atob((new URL(window.location.href)).searchParams.get("data"))
-        //alert(pageCode);
-        //console.log(pageCode);
         makeItem(JSON.parse(pageCode), document.body);
 
     }
